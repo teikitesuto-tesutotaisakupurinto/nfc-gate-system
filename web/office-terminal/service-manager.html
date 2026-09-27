@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+サービス管理
+</title>
+
+</head>
+
+
+<body>
+
+
+<h1>
+サービス管理
+</h1>
+
+
+<h2>
+新規サービス登録
+</h2>
+
+
+サービス名
+
+<br>
+
+<input id="name">
+
+
+<br><br>
+
+
+種類
+
+<br>
+
+
+<select id="type">
+
+<option value="subscription">
+定期券
+</option>
+
+
+<option value="ticket">
+回数券
+</option>
+
+
+</select>
+
+
+<br><br>
+
+
+回数券の場合
+
+
+<br>
+
+
+<input 
+id="count"
+placeholder="回数">
+
+
+<br><br>
+
+
+<button id="save">
+
+登録
+
+</button>
+
+
+
+<h2>
+登録済みサービス
+
+</h2>
+
+
+<div id="list">
+
+</div>
+
+
+
+<script type="module" src="service-manager.js"></script>
+
+
+</body>
+
+</html>
