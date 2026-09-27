@@ -2,7 +2,7 @@ body{
 
 font-family:sans-serif;
 
-background:#eee;
+background:#eeeeee;
 
 }
 
@@ -11,7 +11,7 @@ background:#eee;
 
 width:500px;
 
-margin:80px auto;
+margin:100px auto;
 
 background:white;
 
@@ -28,10 +28,24 @@ button{
 
 width:80%;
 
-padding:15px;
+padding:20px;
+
+font-size:22px;
 
 margin:10px;
 
-font-size:20px;
+}
+
+
+.success{
+
+font-size:30px;
+
+}
+
+
+.error{
+
+font-size:30px;
 
 }
