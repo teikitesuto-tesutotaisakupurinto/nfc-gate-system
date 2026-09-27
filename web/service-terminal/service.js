@@ -37,13 +37,13 @@ document.getElementById(
 
 
 
+
+// カード読み取り監視
+
 const scanQuery =
 query(
 
-collection(
-db,
-"card_scans"
-),
+collection(db,"card_scans"),
 
 orderBy(
 "time",
@@ -51,8 +51,6 @@ orderBy(
 )
 
 );
-
-
 
 
 
@@ -71,12 +69,12 @@ snapshot.docChanges()
 if(change.type==="added"){
 
 
-const data =
-change.doc.data();
+const cardIdm =
+change.doc.data().cardIdm;
 
 
 checkCard(
-data.cardIdm
+cardIdm
 );
 
 
@@ -116,7 +114,7 @@ if(!snap.exists()){
 
 
 error(
-"未登録カード"
+"カードを確認できません"
 );
 
 
@@ -139,9 +137,8 @@ let html =
 ${card.name} 様
 </h2>
 
-
 <h3>
-利用可能サービス
+利用サービスを選択してください
 </h3>
 
 `;
@@ -157,21 +154,14 @@ html +=
 `
 
 <button onclick="
-useService(
-'${cardIdm}',
-'${c.serviceId}',
-${index}
-)
+useService('${cardIdm}',${index})
 ">
 
 ${c.serviceName}
 
 </button>
 
-<br>
-
 `;
-
 
 
 });
@@ -191,7 +181,6 @@ html;
 window.useService =
 async function(
 cardIdm,
-serviceId,
 index
 ){
 
@@ -203,7 +192,6 @@ db,
 "cards",
 cardIdm
 );
-
 
 
 const snap =
@@ -228,6 +216,7 @@ contract.type==="subscription"
 ){
 
 
+
 const today =
 new Date();
 
@@ -239,7 +228,7 @@ contract.endDate
 
 
 
-if(today > end){
+if(today>end){
 
 
 error(
@@ -255,17 +244,20 @@ return;
 
 await saveUsage(
 cardIdm,
-serviceId
+contract
 );
 
 
 
-success(
+complete(
 "ご利用ありがとうございます"
 );
 
 
 }
+
+
+
 
 
 
@@ -278,12 +270,12 @@ contract.type==="ticket"
 
 
 if(
-contract.remainingCount <=0
+contract.remainingCount<=0
 ){
 
 
 error(
-"残り回数がありません"
+"利用回数がありません"
 );
 
 
@@ -304,7 +296,9 @@ contract;
 
 
 await updateDoc(
+
 ref,
+
 {
 
 contracts:
@@ -318,8 +312,9 @@ card.contracts
 
 await saveUsage(
 cardIdm,
-serviceId
+contract
 );
+
 
 
 
@@ -329,7 +324,7 @@ contract.remainingCount===0
 
 
 warning(
-"今回で最後の利用です"
+"今回で最後のご利用です"
 );
 
 
@@ -350,13 +345,12 @@ warning(
 else{
 
 
-success(
+complete(
 "ご利用ありがとうございます"
 );
 
 
 }
-
 
 
 }
@@ -373,7 +367,7 @@ success(
 
 async function saveUsage(
 cardIdm,
-serviceId
+contract
 ){
 
 
@@ -389,7 +383,8 @@ db,
 
 cardIdm,
 
-serviceId,
+service:
+contract.serviceName,
 
 time:
 serverTimestamp()
@@ -405,25 +400,33 @@ serverTimestamp()
 
 
 
-
-function success(msg){
+function complete(msg){
 
 
 result.innerHTML=
 
 `
 
-<h1>
+<div class="success">
+
 ${msg}
-</h1>
+
+<br><br>
+
+ありがとうございました
+
+</div>
 
 `;
 
+
 playSound(
-"normal"
+"success"
 );
 
+
 }
+
 
 
 
@@ -435,17 +438,22 @@ result.innerHTML=
 
 `
 
-<h1>
+<div>
+
 ${msg}
-</h1>
+
+</div>
 
 `;
+
 
 playSound(
 "warning"
 );
 
+
 }
+
 
 
 
@@ -457,14 +465,18 @@ result.innerHTML=
 
 `
 
-<h1>
+<div class="error">
+
 ⚠ ${msg}
-</h1>
+
+</div>
 
 `;
+
 
 playSound(
 "error"
 );
+
 
 }
