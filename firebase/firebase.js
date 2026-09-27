@@ -1,37 +1,67 @@
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
- getFirestore
+
+getFirestore
+
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+
+getAuth
+
+}
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
 
 
 const firebaseConfig = {
 
- apiKey: "AIzaSyBbiGQS6b6n3_tC5Hjso1x71vR7hicoKEQ",
 
- authDomain:
- "nfc-gate-system.firebaseapp.com",
+apiKey:
+"YOUR_API_KEY",
 
- projectId:
- "nfc-gate-system",
+authDomain:
+"nfc-gate-system.firebaseapp.com",
 
- storageBucket:
- "nfc-gate-system.firebasestorage.app",
+projectId:
+"nfc-gate-system",
 
- messagingSenderId:
- "750413894977",
+storageBucket:
+"nfc-gate-system.firebasestorage.app",
 
- appId:
- "1:750413894977:web:dd2b6c4eadd5a339c2bdc0"
+messagingSenderId:
+"750413894977",
+
+appId:
+"YOUR_APP_ID"
 
 };
+
+
 
 
 const app =
 initializeApp(firebaseConfig);
 
 
+
 export const db =
 getFirestore(app);
+
+
+
+export const auth =
+getAuth(app);
