@@ -14,15 +14,15 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
 let cardIdm="";
 
 
 
-document.getElementById(
-"update"
-).onclick =
-async()=>{
+let cardData=null;
+
+
+
+async function loadCard(){
 
 
 const ref =
@@ -33,23 +33,97 @@ cardIdm
 );
 
 
+
 const snap =
 await getDoc(ref);
 
 
-const data =
+
+cardData =
 snap.data();
 
 
 
-data.contracts[0].endDate =
+let html="";
+
+
+cardData.contracts.forEach(
+(c,index)=>{
+
+
+html +=
+
+`
+
+<button onclick="
+choose(${index})
+">
+
+${c.serviceName}
+
+期限：
+${c.endDate}
+
+</button>
+
+<br>
+
+`;
+
+});
+
+
+document.getElementById(
+"contracts"
+).innerHTML=html;
+
+
+}
+
+
+
+window.choose =
+function(index){
+
+
+cardData.selected=index;
+
+
+};
+
+
+
+
+document.getElementById(
+"update"
+).onclick =
+async()=>{
+
+
+const index =
+cardData.selected;
+
+
+cardData.contracts[index].endDate =
 "2027-03-31";
 
 
 
 await updateDoc(
-ref,
-data
+
+doc(
+db,
+"cards",
+cardIdm
+),
+
+{
+
+contracts:
+cardData.contracts
+
+}
+
 );
 
 
