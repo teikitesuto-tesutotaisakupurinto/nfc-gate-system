@@ -10,7 +10,9 @@ orderBy,
 onSnapshot,
 doc,
 getDoc,
-updateDoc
+updateDoc,
+addDoc,
+serverTimestamp
 
 }
 
@@ -25,7 +27,8 @@ let selectedService=null;
 
 
 
-// カード読み取り
+
+// カード取得
 
 onSnapshot(
 
@@ -33,10 +36,7 @@ query(
 
 collection(db,"card_scans"),
 
-orderBy(
-"time",
-"desc"
-)
+orderBy("time","desc")
 
 ),
 
@@ -56,12 +56,12 @@ cardIdm =
 change.doc.data().cardIdm;
 
 
-
 document.getElementById(
 "card"
 ).innerHTML=
 
 `
+
 カード：
 
 ${cardIdm}
@@ -86,19 +86,9 @@ loadServices();
 
 
 
-// サービス一覧取得
+// サービス一覧
 
-async function loadServices(){
-
-
-const box =
-document.getElementById(
-"services"
-);
-
-
-box.innerHTML="";
-
+function loadServices(){
 
 
 onSnapshot(
@@ -106,6 +96,12 @@ onSnapshot(
 collection(db,"services"),
 
 (snapshot)=>{
+
+
+const box =
+document.getElementById(
+"serviceList"
+);
 
 
 box.innerHTML="";
@@ -138,7 +134,10 @@ selectService(
 
 ${s.name}
 
-(${s.type})
+<br>
+
+種類：
+${s.type}
 
 
 </button>
@@ -146,15 +145,12 @@ ${s.name}
 
 <br>
 
+
 `;
 
 
 
-}
-
-
-);
-
+});
 
 
 }
@@ -199,11 +195,24 @@ name+"を選択"
 
 
 
-
 document.getElementById(
 "issue"
 ).onclick =
 async()=>{
+
+
+if(!selectedService){
+
+alert(
+"サービスを選択してください"
+);
+
+
+return;
+
+}
+
+
 
 
 const ref =
@@ -216,6 +225,7 @@ cardIdm
 
 const snap =
 await getDoc(ref);
+
 
 
 const card =
@@ -239,8 +249,14 @@ type:
 selectedService.type,
 
 
+startDate:
+new Date()
+.toISOString(),
+
+
 endDate:
 "2026-12-31",
+
 
 
 remainingCount:
@@ -248,9 +264,11 @@ remainingCount:
 selectedService.type==="ticket"
 
 ?
+
 10
 
 :
+
 null
 
 
@@ -268,6 +286,31 @@ ref,
 
 contracts:
 card.contracts
+
+}
+
+);
+
+
+
+
+
+await addDoc(
+
+collection(db,"operation_logs"),
+
+{
+
+action:
+"issue",
+
+cardIdm,
+
+service:
+selectedService.name,
+
+time:
+serverTimestamp()
 
 }
 
