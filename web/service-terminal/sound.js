@@ -1,42 +1,44 @@
 export function playSound(type){
 
-let audio;
+
+let file="";
 
 
-if(type==="normal"){
+switch(type){
 
-audio =
-new Audio(
-"normal.mp3"
-);
+
+case "success":
+
+file="success.mp3";
+
+break;
+
+
+case "warning":
+
+file="warning.mp3";
+
+break;
+
+
+case "error":
+
+file="error.mp3";
+
+break;
+
 
 }
 
 
-if(type==="warning"){
 
-audio =
+const audio =
 new Audio(
-"warning.mp3"
+"sounds/"+file
 );
 
-}
-
-
-if(type==="error"){
-
-audio =
-new Audio(
-"error.mp3"
-);
-
-}
-
-
-if(audio){
 
 audio.play();
 
-}
 
 }
