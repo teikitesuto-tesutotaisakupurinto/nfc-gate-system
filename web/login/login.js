@@ -18,6 +18,8 @@ from
 
 
 
+
+
 const status =
 document.getElementById(
 "status"
@@ -26,47 +28,61 @@ document.getElementById(
 
 
 
-// Redmiのカード読み取り監視
 
-const q =
+const scanQuery =
 query(
 
 collection(db,"card_scans"),
 
-orderBy("time","desc")
+orderBy(
+"time",
+"desc"
+)
 
 );
 
 
 
-onSnapshot(q,(snapshot)=>{
+
+
+onSnapshot(
+
+scanQuery,
+
+(snapshot)=>{
 
 
 snapshot.docChanges()
 .forEach(
 
-async(change)=>{
+change=>{
 
 
 if(change.type==="added"){
 
 
-const data =
-change.doc.data();
+const cardIdm =
+change.doc.data().cardIdm;
 
 
 checkStaff(
-data.cardIdm
+cardIdm
 );
 
 
 }
 
 
-});
+}
+
+);
 
 
-});
+}
+
+);
+
+
 
 
 
@@ -76,13 +92,10 @@ async function checkStaff(cardIdm){
 
 
 
-const staffQuery =
+const q =
 query(
 
-collection(
-db,
-"staff_cards"
-),
+collection(db,"staff_cards"),
 
 where(
 "cardIdm",
@@ -94,23 +107,23 @@ cardIdm
 
 
 
-const result =
-await getDocs(
-staffQuery
-);
+const snap =
+await getDocs(q);
 
 
 
-if(result.empty){
+if(snap.empty){
 
 
 status.innerHTML=
 
 `
 ⚠
+
 スタッフカードではありません
 
 `;
+
 
 return;
 
@@ -118,8 +131,12 @@ return;
 
 
 
+
+
 const staff =
-result.docs[0].data();
+snap.docs[0].data();
+
+
 
 
 
@@ -129,13 +146,35 @@ staff.status !== "active"
 
 
 status.innerHTML=
-"利用停止カード";
+"停止スタッフカード";
 
 
 return;
 
 }
 
+
+
+
+
+sessionStorage.setItem(
+
+"staff",
+
+JSON.stringify(
+{
+
+name:
+staff.name,
+
+role:
+staff.role
+
+}
+
+)
+
+);
 
 
 
@@ -146,23 +185,21 @@ status.innerHTML=
 
 認証成功
 
-${staff.name} さん
-
-
-管理画面へ移動
+${staff.name}
 
 `;
+
 
 
 
 setTimeout(()=>{
 
 
-location.href =
-"../office-terminal/index.html";
+location.href=
+"../admin/index.html";
 
 
-},1500);
+},1000);
 
 
 
