@@ -6,7 +6,10 @@ import {
 
 doc,
 getDoc,
-updateDoc
+updateDoc,
+collection,
+addDoc,
+serverTimestamp
 
 }
 
@@ -14,32 +17,30 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+
 let cardIdm="";
 
-
-
-let cardData=null;
+let selected=0;
 
 
 
 async function loadCard(){
 
 
-const ref =
+const snap =
+await getDoc(
+
 doc(
 db,
 "cards",
 cardIdm
+)
+
 );
 
 
 
-const snap =
-await getDoc(ref);
-
-
-
-cardData =
+const card =
 snap.data();
 
 
@@ -47,7 +48,8 @@ snap.data();
 let html="";
 
 
-cardData.contracts.forEach(
+
+card.contracts.forEach(
 (c,index)=>{
 
 
@@ -56,10 +58,12 @@ html +=
 `
 
 <button onclick="
-choose(${index})
+selected=${index}
 ">
 
 ${c.serviceName}
+
+<br>
 
 期限：
 ${c.endDate}
@@ -82,16 +86,6 @@ document.getElementById(
 
 
 
-window.choose =
-function(index){
-
-
-cardData.selected=index;
-
-
-};
-
-
 
 
 document.getElementById(
@@ -100,27 +94,58 @@ document.getElementById(
 async()=>{
 
 
-const index =
-cardData.selected;
+const ref =
+doc(
+db,
+"cards",
+cardIdm
+);
 
 
-cardData.contracts[index].endDate =
+
+const snap =
+await getDoc(ref);
+
+
+
+const card =
+snap.data();
+
+
+
+card.contracts[selected].endDate =
 "2027-03-31";
 
 
 
 await updateDoc(
 
-doc(
-db,
-"cards",
-cardIdm
-),
+ref,
 
 {
 
 contracts:
-cardData.contracts
+card.contracts
+
+}
+
+);
+
+
+
+await addDoc(
+
+collection(db,"operation_logs"),
+
+{
+
+action:
+"update",
+
+cardIdm,
+
+time:
+serverTimestamp()
 
 }
 
