@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 
 <title>
-管理画面
+管理メニュー
 </title>
 
 </head>
@@ -17,8 +17,13 @@
 
 
 <h1>
-肩叩き定期券 管理
+肩叩き定期券システム
 </h1>
+
+
+<h2 id="staffName">
+
+</h2>
 
 
 <div id="menu">
@@ -39,13 +44,20 @@
 </button>
 
 
-<button>
+<button id="service">
+
 サービス管理
 </button>
 
 
+<button id="staff">
+
+スタッフ管理
+</button>
+
+
 <button>
-利用履歴
+履歴確認
 </button>
 
 
@@ -53,40 +65,13 @@
 
 
 
-<script>
-
-
-const staff =
-JSON.parse(
-sessionStorage.getItem(
-"staff"
-)
-);
+<button id="logout">
+ログアウト
+</button>
 
 
 
-if(!staff){
-
-location.href="../login/index.html";
-
-}
-
-
-
-if(
-staff.role==="staff"
-){
-
-document.querySelectorAll(
-"button"
-)[3]
-.style.display="none";
-
-}
-
-
-
-</script>
+<script type="module" src="admin.js"></script>
 
 
 </body>
