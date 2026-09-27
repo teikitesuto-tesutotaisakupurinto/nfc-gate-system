@@ -1,10 +1,16 @@
-import { auth } 
+import {
+
+auth
+
+}
+
 from "./firebase.js";
 
 
 import {
 
 signInWithEmailAndPassword,
+
 signOut
 
 }
@@ -39,6 +45,5 @@ export async function logout(){
 
 
 return await signOut(auth);
-
 
 }
