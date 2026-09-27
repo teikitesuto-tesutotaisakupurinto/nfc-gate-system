@@ -31,7 +31,7 @@ const firebaseConfig = {
 
 
 apiKey:
-"YOUR_API_KEY",
+"AIzaSyBbiGQS6b6n3_tC5Hjso1x71vR7hicoKEQ",
 
 authDomain:
 "nfc-gate-system.firebaseapp.com",
@@ -46,7 +46,7 @@ messagingSenderId:
 "750413894977",
 
 appId:
-"YOUR_APP_ID"
+"1:750413894977:web:dd2b6c4eadd5a339c2bdc0"
 
 };
 
