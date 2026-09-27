@@ -5,7 +5,8 @@ login
 }
 
 from
-"../../firebase/auth.js";
+"../firebase/auth.js";
+
 
 
 document.getElementById(
@@ -51,13 +52,12 @@ catch(e){
 
 document.getElementById(
 "message"
-).innerHTML=
+).innerHTML =
 
-"ログイン失敗";
+"ログインできません";
 
 
 }
-
 
 
 };
