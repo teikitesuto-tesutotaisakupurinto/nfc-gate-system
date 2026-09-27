@@ -1,11 +1,15 @@
-import {db}
+import { db }
 from "../../firebase/firebase.js";
 
 
 import {
 
+collection,
 doc,
-getDoc
+setDoc,
+getDocs,
+serverTimestamp,
+updateDoc
 
 }
 
@@ -15,54 +19,53 @@ from
 
 
 const deviceId =
-"service001";
+document.getElementById(
+"deviceId"
+);
 
 
+const deviceName =
+document.getElementById(
+"deviceName"
+);
 
-async function checkDevice(){
+
+const deviceType =
+document.getElementById(
+"deviceType"
+);
 
 
+const status =
+document.getElementById(
+"status"
+);
 
-const ref =
-doc(
-db,
-"devices",
-deviceId
+
+const list =
+document.getElementById(
+"deviceList"
 );
 
 
 
-const snap =
-await getDoc(ref);
 
+// 登録ボタン
 
-
-if(!snap.exists()){
-
-
-alert(
-"未登録端末"
-);
-
-
-return;
-
-}
-
-
-
-const device =
-snap.data();
-
+document.getElementById(
+"register"
+).onclick =
+async()=>{
 
 
 if(
-device.status !== "active"
+!deviceId.value ||
+!deviceName.value
 ){
 
 
 alert(
-"停止端末です"
+"入力してください"
 );
 
 
@@ -72,14 +75,216 @@ return;
 
 
 
-console.log(
-"端末認証OK",
-device.type
+await setDoc(
+
+doc(
+db,
+"devices",
+deviceId.value
+),
+
+{
+
+
+name:
+deviceName.value,
+
+
+type:
+deviceType.value,
+
+
+status:
+status.value,
+
+
+createdAt:
+serverTimestamp()
+
+
+}
+
 );
+
+
+
+alert(
+"端末登録完了"
+);
+
+
+
+loadDevices();
+
+
+};
+
+
+
+
+// 一覧表示
+
+async function loadDevices(){
+
+
+list.innerHTML="";
+
+
+
+const snap =
+await getDocs(
+
+collection(
+db,
+"devices"
+)
+
+);
+
+
+
+snap.forEach(
+
+(device)=>{
+
+
+const data =
+device.data();
+
+
+
+list.innerHTML +=
+
+
+`
+
+<div>
+
+<h3>
+${data.name}
+</h3>
+
+
+端末ID：
+${device.id}
+
+<br>
+
+
+種類：
+${
+
+data.type==="office"
+
+?
+
+"窓口端末"
+
+:
+
+"サービス利用端末"
+
+}
+
+
+<br>
+
+
+状態：
+${data.status}
+
+
+<br><br>
+
+
+<button
+onclick="
+changeStatus(
+'${device.id}',
+'${data.status}'
+)
+">
+
+状態変更
+
+</button>
+
+
+</div>
+
+
+<hr>
+
+
+`;
+
+
+
+});
 
 
 }
 
 
 
-checkDevice();
+
+
+// 状態変更
+
+window.changeStatus =
+async function(
+id,
+current
+){
+
+
+
+const newStatus =
+
+current==="active"
+
+?
+
+"inactive"
+
+:
+
+"active";
+
+
+
+await updateDoc(
+
+doc(
+db,
+"devices",
+id
+),
+
+{
+
+status:
+newStatus
+
+}
+
+);
+
+
+
+alert(
+"変更しました"
+);
+
+
+
+loadDevices();
+
+
+}
+
+
+
+
+
+loadDevices();
